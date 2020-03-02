@@ -15,19 +15,33 @@ class StringCommand
         $this->context = $context;
     }
 
-    public function s():bool
+    public function _(string $string):bool
     {
-        //$substring = $this->context->
+        $substring = $this->context->getSubstring();
+
+        if (UTF8::strpos($substring, $string) === 0) {
+
+            return true;
+        }
+
+        return false;
     }
 
-    public function test(bool $test)
+    public function test(callable $command)
     {
-        return $test;
+        return $command();
     }
 
-    public function try(bool $test)
+    public function try(callable $command)
     {
+        $cursor = $this->context->getCursor();
 
+        if (!$command()) {
+            // if f signal, restore cursor
+            $this->context->setCursor($cursor);
+        }
+
+        return true;
     }
 
     public function goto($variable): bool
@@ -65,6 +79,7 @@ class StringCommand
 
         for ($i=$this->context->getCursor(); $i<$this->context->getLimit(); $i++) {
             $substring = UTF8::substr($this->context->getString(), $i);
+            $found = false;
             foreach ($variables as $item) {
                 if (UTF8::strpos($substring, $item) === 0) {
                     $found = true;
@@ -89,10 +104,9 @@ class StringCommand
             $variable = [$variable];
         }
 
-        $found = false;
-
         for ($i=$this->context->getCursor(); $i<$this->context->getLimit(); $i++) {
             $substring = UTF8::substr($this->context->getString(), $i);
+            $found = false;
             foreach ($variable as $item) {
                 if (UTF8::strpos($substring, $item) === 0) {
                     $this->context->setCursor($i + UTF8::strlen($item));
@@ -112,11 +126,9 @@ class StringCommand
             $variables = [$variables];
         }
 
-        $length = 0;
-        $found = false;
-
         for ($i=$this->context->getCursor(); $i<$this->context->getLimit(); $i++) {
             $substring = UTF8::substr($this->context->getString(), $i);
+            $found = false;
             foreach ($variables as $item) {
                 if (UTF8::strpos($substring, $item) === 0) {
                     $found = true;
@@ -125,7 +137,7 @@ class StringCommand
             }
 
             if (!$found) {
-                $this->context->setCursor($i+$length);
+                $this->context->setCursor($i+1);
             }
         }
 
@@ -147,15 +159,42 @@ class StringCommand
         return true;
     }
 
+    public function setlimit(callable $c1, callable $c2): bool
+    {
+        $cursor = $this->context->getCursor();
+        $limit = $this->context->getLimit();
+
+        if (!$c1()) {
+            return false;
+        }
+
+        $this->context->setLimit($this->context->getCursor());
+        $this->context->setCursor($cursor);
+
+        $return = $c2();
+
+        $this->context->setLimit($limit);
+
+        return $return;
+    }
+
+    /**
+     * [substring] similar to $context->getSubtring
+     */
+    public function brackets()
+    {
+        return $this->context->getSubstring();
+    }
+
+    public function among(callable $substring, callable $lines): bool
+    {
+        $substring = $substring();
+    }
+
     /*public function try()
     {
         return true;
     }*/
 
-    public function setmark(int &$x): bool
-    {
-        $x = $this->context->getCursor();
 
-        return true;
-    }
 }

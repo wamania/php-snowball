@@ -18,7 +18,7 @@ class Grouping
         $this->stringdef = $stringdef;
     }
 
-    public function add(string $key, string $value): self
+    public function set(string $key, string $value): self
     {
         $stringdefs = array_flip(array_map(function($v) {
             return sprintf('{%s}', $v);

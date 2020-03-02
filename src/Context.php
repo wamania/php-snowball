@@ -3,6 +3,7 @@
 namespace Wamania\Snowball;
 
 use voku\helper\UTF8;
+use Wamania\Snowball\Exception\ContextException;
 
 class Context
 {
@@ -14,6 +15,9 @@ class Context
 
     /** @var int */
     private $limit;
+
+    /** @var string */
+    private $mode;
 
     public function __construct(string $string)
     {
@@ -60,6 +64,27 @@ class Context
 
     public function getSubstring(): string
     {
-
+        return UTF8::substr($this->string, $this->cursor, ($this->limit - $this->cursor));
     }
+
+    /**
+     * @throws ContextException
+     */
+    public function setMode(string $mode): Context
+    {
+        if (($mode !== 'forward') && ($mode !== 'backward')) {
+            throw new ContextException(sprintf('Unknown mode %', $mode));
+        }
+
+        $this->mode = $mode;
+
+        return $this;
+    }
+
+
+
+    /*public function getMode()
+    {
+
+    }*/
 }

@@ -24,6 +24,9 @@ class Snowball
         return $this;
     }
 
+    /**
+     * @throws UnknownVariableException
+     */
     public function getVar($key)
     {
         if (!isset($this->definitions[$key])) {
@@ -33,6 +36,9 @@ class Snowball
         return $this->definitions[$key];
     }
 
+    /**
+     * @throws NotCallableException
+     */
     public function launch(string $key): self
     {
         if ((!isset($this->definitions[$key])) || !is_callable($this->definitions[$key])) {
@@ -56,4 +62,9 @@ class Snowball
 
         return true;
     }
+
+    /**public function backwardmode()
+    {
+        $this->context
+    }*/
 }

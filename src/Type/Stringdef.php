@@ -12,7 +12,7 @@ class Stringdef
         $this->definitions = [];
     }
 
-    public function add(string $key, string $value): self
+    public function set(string $key, string $value): self
     {
         $this->definitions[$key] = $value;
 
