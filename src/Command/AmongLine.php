@@ -18,6 +18,11 @@ class AmongLine
 
     public function apply()
     {
-        
+
+    }
+
+    public function getSuffixes()
+    {
+        return $this->suffixes;
     }
 }

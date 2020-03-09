@@ -12,6 +12,7 @@ use Wamania\Snowball\Type\Grouping;
 use Wamania\Snowball\Type\Non;
 use Wamania\Snowball\IntegerCommand;
 use Wamania\Snowball\Type\IntegerBucket;
+use Wamania\Snowball\Command\AmongLine;
 
 $context = new Context('jaktbössa');
 
@@ -70,16 +71,25 @@ try {
                     return $stringCommand->among(
                         function () use ($stringCommand) {
                             return $stringCommand->brackets();
-                        }, function () {
-                            return ;
-                        }
+                        }, [
+                            new AmongLine(
+                                [
+                                    'a', 'arna', 'erna', 'heterna', 'orna', 'ad', 'e', 'ade', 'ande', 'arne',
+                                    'are', 'aste', 'en', 'anden', 'aren', 'heten', 'ern', 'ar', 'er', 'heter',
+                                    'or', 'as', 'arnas', 'ernas', 'ornas', 'es', 'ades', 'andes', 'ens', 'arens',
+                                    'hetens', 'erns', 'at', 'andet', 'het', 'ast',
+                                ],
+                                function(string $prefix) use ($stringCommand) {
+                                    return $stringCommand->delete($prefix);
+                                }
+                            )
+                        ]
                     );
                 }
             );
         })
-        ->launch('mark_regions');
+        ->launch('mark_regions')
+        ->launch('main_suffix');
 
 } catch (NotCallableException $e) {
 };
-
-dump($integerBucket);

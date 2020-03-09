@@ -3,6 +3,7 @@
 namespace Wamania\Snowball;
 
 use voku\helper\UTF8;
+use Wamania\Snowball\Command\AmongLine;
 use Wamania\Snowball\Type\Non;
 
 class StringCommand
@@ -186,9 +187,24 @@ class StringCommand
         return $this->context->getSubstring();
     }
 
-    public function among(callable $substring, callable $lines): bool
+    public function among(callable $substring, array $lines): bool
     {
         $substring = $substring();
+
+        /** @var AmongLine $line */
+        foreach ($lines as $line) {
+            $suffixes = $line->getSuffixes();
+            usort($suffixes, function($a, $b) {
+                return UTF8::strlen($a) > UTF8::strlen($b) ? -1 : 1;
+            });
+        }
+
+        return true;
+    }
+
+    public function delete(string $prefix): bool
+    {
+
     }
 
     /*public function try()
