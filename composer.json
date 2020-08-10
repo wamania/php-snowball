@@ -1,6 +1,6 @@
 {
 	"name": "wamania/php-snowball",
-	"description": "Native PHP5 Stemmer snowball",
+	"description": "Native PHP Stemmer snowball",
 	"keywords": ["stemmer", "porter", "php", "snowball"],
 	"license": "MIT",
 	"authors": [
